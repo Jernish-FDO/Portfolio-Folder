@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,179 +8,15 @@
     <title>Jernish | The Hardware-Aware Developer</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 
-    <style>
-        /* --- 1. VARIABLES & CORE --- */
-        :root {
-            --bg-body: #0f172a;
-            --bg-card: rgba(30, 41, 59, 0.75); 
-            --bg-nav: rgba(15, 23, 42, 0.9);
-            --primary: #38bdf8;     /* Cyan - Represents Code */
-            --secondary: #a78bfa;   /* Purple - Represents Creative */
-            --accent: #10b981;      /* Green - Represents PCB/Circuits */
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.1);
-            --font-main: 'Outfit', sans-serif;
-        }
-
-        body.light-mode {
-            --bg-body: #f1f5f9;
-            --bg-card: rgba(255, 255, 255, 0.8);
-            --bg-nav: rgba(255, 255, 255, 0.9);
-            --primary: #0284c7;
-            --secondary: #6366f1;
-            --accent: #059669;
-            --text-main: #0f172a;
-            --text-muted: #475569;
-            --border: rgba(0, 0, 0, 0.08);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-        html { scroll-behavior: smooth; overflow-x: hidden; }
-        
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        /* --- 2. PARTICLE CANVAS (VFX Layer) --- */
-        #canvas-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; pointer-events: none;
-        }
-
-        /* --- 3. CURSOR SYSTEM --- */
-        .cursor-dot, .cursor-outline {
-            position: fixed; top: 0; left: 0; transform: translate(-50%, -50%);
-            border-radius: 50%; z-index: 9999; pointer-events: none;
-        }
-        .cursor-dot { width: 8px; height: 8px; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
-        .cursor-outline {
-            width: 40px; height: 40px; border: 1px solid var(--primary);
-            transition: all 0.1s ease-out;
-        }
-        body.hovering .cursor-outline {
-            width: 70px; height: 70px; background: rgba(14, 165, 233, 0.1);
-            border-color: transparent; mix-blend-mode: screen;
-        }
-
-        /* --- 4. NAVIGATION --- */
-        nav {
-            position: fixed; width: 100%; padding: 1.5rem 8%; z-index: 1000;
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--bg-nav); backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo {
-            font-size: 1.8rem; font-weight: 800;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .nav-links { display: flex; gap: 2.5rem; }
-        .nav-links a {
-            text-decoration: none; color: var(--text-main); font-weight: 500;
-            position: relative; font-size: 0.95rem; letter-spacing: 0.5px;
-        }
-        .nav-links a::after {
-            content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0;
-            background: var(--accent); transition: 0.3s;
-        }
-        .nav-links a:hover::after { width: 100%; }
-        
-        /* Glitch Animation for Name */
-        .glitch-text:hover { animation: glitch 0.3s infinite; color: var(--accent); }
-        @keyframes glitch {
-            0% { transform: translate(0) } 20% { transform: translate(-2px, 2px) }
-            40% { transform: translate(-2px, -2px) } 60% { transform: translate(2px, 2px) }
-            80% { transform: translate(2px, -2px) } 100% { transform: translate(0) }
-        }
-
-        /* Theme/Menu Buttons */
-        .theme-btn, .menu-btn { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 8px; border-radius: 50%; }
-        .menu-btn { display: none; }
-
-        /* --- 5. HERO SECTION --- */
-        .hero {
-            min-height: 100vh; display: flex; align-items: center; position: relative; padding: 0 8%;
-        }
-        .hero-content { z-index: 2; max-width: 750px; }
-        
-        .hero-subtitle { 
-            color: var(--accent); font-family: monospace; letter-spacing: 3px; margin-bottom: 1rem; 
-            background: rgba(16, 185, 129, 0.1); display: inline-block; padding: 5px 10px; border-radius: 4px;
-        }
-        
-        h1 { font-size: clamp(3rem, 6vw, 5.5rem); line-height: 1.1; margin-bottom: 1.5rem; font-weight: 800; }
-        .typing::after { content: '|'; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        .hero p { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 2.5rem; line-height: 1.8; }
-
-        /* Buttons */
-        .btn-group { display: flex; gap: 20px; }
-        .btn {
-            padding: 14px 32px; border-radius: 50px; font-weight: 700; text-decoration: none;
-            transition: 0.3s; position: relative; overflow: hidden; z-index: 1;
-        }
-        .btn-primary { 
-            background: var(--primary); color: #fff; box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); 
-        }
-        .btn-primary:hover { box-shadow: 0 0 40px rgba(56, 189, 248, 0.7); transform: scale(1.05); }
-        .btn-outline { border: 2px solid var(--border); color: var(--text-main); }
-        .btn-outline:hover { border-color: var(--text-main); transform: translateY(-3px); }
-
-        /* --- 6. SECTIONS (Cards) --- */
-        section { padding: 6rem 8%; position: relative; }
-        
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
-        
-        .tech-card {
-            background: var(--bg-card); padding: 2.5rem; border-radius: 15px;
-            border: 1px solid var(--border); transition: 0.4s; position: relative; overflow: hidden;
-            backdrop-filter: blur(5px);
-        }
-        .tech-card h3 { font-size: 1.4rem; margin-bottom: 15px; }
-        /* Hover Circuit Effect */
-        .tech-card::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, var(--accent)); transition: 0.5s;
-        }
-        .tech-card:hover::before { left: 100%; }
-        .tech-card:hover { transform: translateY(-10px); border-color: var(--primary); }
-
-        .project-card {
-            background: var(--bg-card); border-radius: 20px; overflow: hidden; border: 1px solid var(--border); transition: 0.3s;
-        }
-        .project-card:hover { transform: scale(1.02); box-shadow: 0 20px 50px rgba(0,0,0,0.5); border-color: var(--accent); }
-        .project-img { height: 220px; background: #1e293b; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: rgba(255,255,255,0.1); }
-        
-        .general-knowledge-section { background: rgba(15, 23, 42, 0.4); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-        
-        /* Floating Shapes (VFX) */
-        .shape { position: absolute; opacity: 0.2; z-index: -1; animation: float 20s infinite linear; pointer-events: none;}
-        .s-sq { top: 20%; right: 10%; width: 100px; height: 100px; border: 2px solid var(--secondary); }
-        .s-circ { bottom: 10%; left: 5%; width: 150px; height: 150px; border: 2px dashed var(--primary); border-radius: 50%; }
-        @keyframes float { 0% { transform: rotate(0deg) translateY(0); } 50% { transform: rotate(180deg) translateY(-40px); } 100% { transform: rotate(360deg) translateY(0); } }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 768px) {
-            nav { padding: 1.2rem 5%; } .nav-links { display: none; } .menu-btn { display: block; }
-            h1 { font-size: 2.8rem; } .hero { padding-top: 100px; }
-        }
-
-    </style>
 </head>
+
 <body>
 
     <!-- 1. VFX: PARTICLE CANVAS -->
     <canvas id="canvas-container"></canvas>
-    
+
     <!-- 2. MOUSE CURSOR -->
     <div class="cursor-dot" data-cursor-dot></div>
     <div class="cursor-outline" data-cursor-outline></div>
@@ -206,11 +43,12 @@
 
         <div class="hero-content reveal">
             <span class="hero-subtitle">DIPLOMA: ELECTRONICS & COMMUNICATION</span>
-            <h1>The Developer Who<br> <span class="typing glitch-text" style="color: var(--primary);">Speaks Machine.</span></h1>
+            <h1>The Developer Who<br> <span class="typing glitch-text" style="color: var(--primary);">Speaks
+                    Machine.</span></h1>
             <p>
-                Hi, I'm <b>Jernish</b>. Most developers see code as text; I see it as signals. 
-                My background in <b>ECE (Electronics & Communication)</b> gives me a microscopic 
-                understanding of how logic gates turn into software architecture. 
+                Hi, I'm <b>Jernish</b>. Most developers see code as text; I see it as signals.
+                My background in <b>ECE (Electronics & Communication)</b> gives me a microscopic
+                understanding of how logic gates turn into software architecture.
                 I build the bridge from Silicon to Screen.
             </p>
             <div class="btn-group">
@@ -223,7 +61,8 @@
     <!-- 5. GENERAL KNOWLEDGE & ECE INSIGHTS -->
     <section id="knowledge" class="general-knowledge-section">
         <div style="text-align: center; margin-bottom: 4rem;">
-            <h2 style="font-size: 2.5rem; margin-bottom:10px;">Hardware <i class="fas fa-exchange-alt" style="color:var(--text-muted); font-size: 1.5rem; margin:0 10px;"></i> Software</h2>
+            <h2 style="font-size: 2.5rem; margin-bottom:10px;">Hardware <i class="fas fa-exchange-alt"
+                    style="color:var(--text-muted); font-size: 1.5rem; margin:0 10px;"></i> Software</h2>
             <p style="color:var(--text-muted); max-width: 600px; margin: 0 auto;">
                 Applying Diploma-level Electronics Principles to Modern Web Development.
             </p>
@@ -236,25 +75,33 @@
                 <h3>Microprocessor Logic</h3>
                 <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
                     <b>Subject:</b> Microcontrollers (8051/8086).<br>
-                    <b>Web Application:</b> Learning Assembly language and Memory Mapping taught me the value of a single byte. I apply this "low-level efficiency" to write JavaScript that is optimized, preventing memory leaks in complex Single Page Applications.
+                    <b>Web Application:</b> Learning Assembly language and Memory Mapping taught me the value of a
+                    single byte. I apply this "low-level efficiency" to write JavaScript that is optimized, preventing
+                    memory leaks in complex Single Page Applications.
                 </p>
             </div>
             <!-- Knowledge 2 -->
             <div class="tech-card nav-hover">
-                <i class="fas fa-broadcast-tower" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <i class="fas fa-broadcast-tower"
+                    style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;"></i>
                 <h3>Signal & Communication</h3>
                 <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
                     <b>Subject:</b> Analog/Digital Communication.<br>
-                    <b>Web Application:</b> I studied Modulation, Bandwidth, and Noise. This makes me an expert at handling APIs. I treat Websockets like real-time signal streams, ensuring data integrity just like a radio transmission protocol.
+                    <b>Web Application:</b> I studied Modulation, Bandwidth, and Noise. This makes me an expert at
+                    handling APIs. I treat Websockets like real-time signal streams, ensuring data integrity just like a
+                    radio transmission protocol.
                 </p>
             </div>
             <!-- Knowledge 3 -->
             <div class="tech-card nav-hover">
-                <i class="fas fa-network-wired" style="font-size: 2rem; color: var(--secondary); margin-bottom: 1rem;"></i>
+                <i class="fas fa-network-wired"
+                    style="font-size: 2rem; color: var(--secondary); margin-bottom: 1rem;"></i>
                 <h3>Embedded Control (IoT)</h3>
                 <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
                     <b>Subject:</b> Sensors & Transducers.<br>
-                    <b>Web Application:</b> I understand how data is generated physically. Whether it's a React Dashboard for temperature sensors or a Node.js backend processing GPS data, I know the hardware source of the JSON.
+                    <b>Web Application:</b> I understand how data is generated physically. Whether it's a React
+                    Dashboard for temperature sensors or a Node.js backend processing GPS data, I know the hardware
+                    source of the JSON.
                 </p>
             </div>
         </div>
@@ -289,18 +136,22 @@
 
     <!-- 7. PROJECTS (Hybrid ECE/Software) -->
     <section id="projects">
-        <h2 style="font-size: 2.5rem; margin-bottom: 3rem;">Systems <span style="color: var(--primary);">Engineering</span></h2>
+        <h2 style="font-size: 2.5rem; margin-bottom: 3rem;">Systems <span
+                style="color: var(--primary);">Engineering</span></h2>
         <div class="grid-3">
             <!-- Project 1 -->
             <div class="project-card nav-hover">
                 <div class="project-img"><i class="fas fa-robot"></i></div>
                 <div style="padding: 1.5rem;">
                     <h3>Autonomous Line Follower</h3>
-                    <p style="font-size:0.85rem; color:var(--accent); margin-bottom:10px; font-family: monospace;">C++ | IR Sensors | PID Logic</p>
+                    <p style="font-size:0.85rem; color:var(--accent); margin-bottom:10px; font-family: monospace;">C++ |
+                        IR Sensors | PID Logic</p>
                     <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:15px;">
-                        Developed logic for an autonomous bot using PID (Proportional-Integral-Derivative) control loops for precision correction, eliminating jitter.
+                        Developed logic for an autonomous bot using PID (Proportional-Integral-Derivative) control loops
+                        for precision correction, eliminating jitter.
                     </p>
-                    <a href="#" style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">View Logic Flow -></a>
+                    <a href="#" style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">View Logic Flow
+                        -></a>
                 </div>
             </div>
             <!-- Project 2 -->
@@ -308,11 +159,14 @@
                 <div class="project-img"><i class="fas fa-server"></i></div>
                 <div style="padding: 1.5rem;">
                     <h3>Home Automation WebServer</h3>
-                    <p style="font-size:0.85rem; color:var(--accent); margin-bottom:10px; font-family: monospace;">ESP32 | React | WebSockets</p>
+                    <p style="font-size:0.85rem; color:var(--accent); margin-bottom:10px; font-family: monospace;">ESP32
+                        | React | WebSockets</p>
                     <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:15px;">
-                        A Full-Stack IoT project. I replaced the standard remote with a React PWA that sends binary signals to an ESP32 via Wi-Fi.
+                        A Full-Stack IoT project. I replaced the standard remote with a React PWA that sends binary
+                        signals to an ESP32 via Wi-Fi.
                     </p>
-                    <a href="#" style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">View Architecture -></a>
+                    <a href="#" style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">View Architecture
+                        -></a>
                 </div>
             </div>
             <!-- Project 3 -->
@@ -320,11 +174,14 @@
                 <div class="project-img"><i class="fas fa-code-branch"></i></div>
                 <div style="padding: 1.5rem;">
                     <h3>Oscilloscope Data Viz</h3>
-                    <p style="font-size:0.85rem; color:var(--accent); margin-bottom:10px; font-family: monospace;">Canvas API | D3.js</p>
+                    <p style="font-size:0.85rem; color:var(--accent); margin-bottom:10px; font-family: monospace;">
+                        Canvas API | D3.js</p>
                     <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:15px;">
-                        Recreated the feel of a CRO (Cathode Ray Oscilloscope) in the browser using JavaScript math functions to visualize Sine/Square waves.
+                        Recreated the feel of a CRO (Cathode Ray Oscilloscope) in the browser using JavaScript math
+                        functions to visualize Sine/Square waves.
                     </p>
-                    <a href="#" style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">Run Simulation -></a>
+                    <a href="#" style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">Run Simulation
+                        -></a>
                 </div>
             </div>
         </div>
@@ -334,127 +191,19 @@
     <section id="contact" style="text-align: center; padding-bottom: 5rem;">
         <h2 style="font-size: 3rem; margin-bottom: 1rem;" class="glitch-text">Let's Connect Circuit to Code</h2>
         <p style="color: var(--text-muted); max-width: 550px; margin: 0 auto 3rem auto;">
-            I am an Electronics Engineer ready to deploy full-stack web solutions. 
+            I am an Electronics Engineer ready to deploy full-stack web solutions.
             From troubleshooting logic boards to debugging API endpoints.
         </p>
         <a href="mailto:jernish@example.com" class="btn btn-primary nav-hover">Initiate Transmission</a>
     </section>
 
-    <footer style="padding: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+    <footer
+        style="padding: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.9rem;">
         <p>© 2025 Jernish. Built with <i class="fas fa-bolt" style="color: #eab308;"></i> Voltage & Logic.</p>
     </footer>
 
     <!-- JAVASCRIPT (VFX LOGIC PRESERVED) -->
-    <script>
-        // 1. CIRCUIT PARTICLE SYSTEM
-        const canvas = document.getElementById("canvas-container");
-        const ctx = canvas.getContext("2d");
-        let particlesArray;
-        let mouse = { x: null, y: null, radius: 150 };
-
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
-
-        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
-
-        class Particle {
-            constructor(x, y, dx, dy, size) {
-                this.x = x; this.y = y; this.dx = dx; this.dy = dy; this.size = size;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = '#38bdf8'; // Code Blue
-                ctx.fill();
-            }
-            update() {
-                if (this.x > canvas.width || this.x < 0) this.dx = -this.dx;
-                if (this.y > canvas.height || this.y < 0) this.dy = -this.dy;
-
-                // Interactivity
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < mouse.radius) {
-                    if(mouse.x < this.x && this.x < canvas.width - 10) this.x += 2;
-                    if(mouse.x > this.x && this.x > 10) this.x -= 2;
-                    if(mouse.y < this.y && this.y < canvas.height - 10) this.y += 2;
-                    if(mouse.y > this.y && this.y > 10) this.y -= 2;
-                }
-                this.x += this.dx; this.y += this.dy;
-                this.draw();
-            }
-        }
-
-        function init() {
-            particlesArray = [];
-            let count = (canvas.width * canvas.height) / 9000;
-            for (let i = 0; i < count; i++) {
-                let size = (Math.random() * 2) + 1;
-                let x = (Math.random() * (canvas.width - size * 2)) + size * 2;
-                let y = (Math.random() * (canvas.height - size * 2)) + size * 2;
-                let dx = (Math.random() * 1) - 0.5;
-                let dy = (Math.random() * 1) - 0.5;
-                particlesArray.push(new Particle(x, y, dx, dy, size));
-            }
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-            }
-            connect();
-        }
-
-        function connect() {
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let dist = ((particlesArray[a].x - particlesArray[b].x)**2) + ((particlesArray[a].y - particlesArray[b].y)**2);
-                    if (dist < (canvas.width/7) * (canvas.height/7)) {
-                        let opacity = 1 - (dist/20000);
-                        ctx.strokeStyle = 'rgba(56, 189, 248, ' + opacity + ')'; // Connection color
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-        init(); animate();
-
-        // 2. CURSOR LOGIC
-        const dot = document.querySelector('[data-cursor-dot]');
-        const outline = document.querySelector('[data-cursor-outline]');
-        
-        if(matchMedia('(pointer:fine)').matches) {
-            window.addEventListener("mousemove", (e) => {
-                const posX = e.clientX; const posY = e.clientY;
-                dot.style.left = `${posX}px`; dot.style.top = `${posY}px`;
-                outline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 300, fill: "forwards" });
-            });
-            document.querySelectorAll(".nav-hover").forEach(el => {
-                el.addEventListener("mouseenter", () => document.body.classList.add("hovering"));
-                el.addEventListener("mouseleave", () => document.body.classList.remove("hovering"));
-            });
-        }
-
-        // 3. THEME & OBSERVER
-        const themeBtn = document.getElementById('themeToggle');
-        themeBtn.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            themeBtn.querySelector('i').className = document.body.classList.contains('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
-        });
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('reveal-active'); });
-        });
-        // You can add class="reveal" to specific sections to fade them in
-        // currently active class handling is done via CSS defaults mostly for performance
-
-    </script>
+    <script src="js/script.js"></script>
 </body>
+
 </html>
