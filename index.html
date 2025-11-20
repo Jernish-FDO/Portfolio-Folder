@@ -3,23 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
+    <meta name="description" content="Select a portfolio version to view">
+    <title>Select Portfolio | My Showcase</title>
+    
+    <!-- Fonts: Inter (Modern, Clean) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <header>
-        <h1>Welcome to My Portfolio</h1>
-    </header>
-    <main>
-        <section class="portfolio-links">
-            <p>Please select a portfolio to view:</p>
-            <a href="Portfolio 1/index.html" class="portfolio-button">Portfolio 1</a>
-            <a href="Portfolio 2/index.html" class="portfolio-button">Portfolio 2</a>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2025 My Portfolio</p>
-    </footer>
+<body class="fade-in">
+    
+    <div class="layout-wrapper">
+        <header>
+            <div class="logo">Jernish</div>
+        </header>
+
+        <main>
+            <div class="card">
+                <h1>Welcome Back</h1>
+                <p class="subtitle">Please select a version to view:</p>
+                
+                <div class="button-group">
+                    <!-- Tip: Rename folders to avoid spaces in URLs -->
+                    <a href="Portfolio 1/index.html" class="portfolio-button">
+                        <span class="label">Portfolio 1</span>
+                        <span class="arrow">→</span>
+                    </a>
+                    <a href="Portfolio 2/index.html" class="portfolio-button">
+                        <span class="label">Portfolio 2</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 My Portfolio. All rights reserved.</p>
+        </footer>
+    </div>
+
     <script src="js/script.js"></script>
 </body>
 </html>

@@ -1,17 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Add a class to the body when the DOM is fully loaded
-    // This can be used to trigger CSS animations for the entire page or specific elements
-    document.body.classList.add('page-loaded');
+    const body = document.body;
+    const links = document.querySelectorAll('.portfolio-button');
 
-    // Example of adding more interactive logic (optional)
-    // You could add event listeners to the portfolio buttons here
-    const portfolioButtons = document.querySelectorAll('.portfolio-button');
+    // 1. Trigger Entry Animation
+    // Slight delay to ensure CSS loads cleanly
+    setTimeout(() => {
+        body.classList.add('loaded');
+    }, 50);
 
-    portfolioButtons.forEach(button => {
-        button.addEventListener('click', (event) => {
-            // Optional: Add a confirmation or a custom animation before redirecting
-            // For now, it will just follow the href, but you can add more here.
-            console.log(`Navigating to: ${event.target.href}`);
+    // 2. Handle Link Clicks for smooth Exit Transition
+    links.forEach(link => {
+        link.addEventListener('click', (event) => {
+            const href = link.getAttribute('href');
+
+            // Don't prevent default if it's opening in a new tab
+            if (link.target !== '_blank') {
+                event.preventDefault(); // Stop immediate navigation
+                
+                // Add exit class to body
+                body.classList.remove('loaded');
+                body.classList.add('fade-out');
+
+                // Wait for animation to finish, then navigate
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 500); // Matches CSS transition time (0.5s)
+            }
         });
     });
+    
+    console.log('%c DEV MODE ACTIVE ', 'background: #222; color: #bada55; font-weight: bold;');
 });
