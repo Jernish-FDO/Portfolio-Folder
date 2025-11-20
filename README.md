@@ -88,9 +88,9 @@ To view this project locally on your machine, follow these steps:
 Contributions, issues, and feature requests are welcome!
 Feel free to check the [issues page](https://github.com/Jernish-FDO/Portfolio-Folder/issues).
 
-## 📬 Contact
+<!-- ## 📬 Contact
  
-<!-- Feel free to reach out to me for collaborations or just a quick chat!
+Feel free to reach out to me for collaborations or just a quick chat!
 
 *   **GitHub:** [Jernish-FDO](https://github.com/Jernish-FDO)
 *   **Email:** [Your-Email-Here@example.com] 
