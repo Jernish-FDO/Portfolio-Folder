@@ -89,12 +89,13 @@ Contributions, issues, and feature requests are welcome!
 Feel free to check the [issues page](https://github.com/Jernish-FDO/Portfolio-Folder/issues).
 
 ## 📬 Contact
-
-Feel free to reach out to me for collaborations or just a quick chat!
+ 
+<!-- Feel free to reach out to me for collaborations or just a quick chat!
 
 *   **GitHub:** [Jernish-FDO](https://github.com/Jernish-FDO)
-*   **Email:** [amalajernish228@gmail.com] <!-- UPDATE THIS -->
-<!-- *   **LinkedIn:** [Link-To-Profile] -->
+*   **Email:** [Your-Email-Here@example.com] 
+*   **LinkedIn:** [Link-To-Profile]  -->
+
 ---
 
 <p align="center">
