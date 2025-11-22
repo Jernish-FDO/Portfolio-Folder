@@ -50,9 +50,24 @@ Here is a quick overview of the file structure:
 
 ```bash
 Portfolio-Folder/
-├── assets/
-│   ├── images/       # Profile pictures, project screenshots
-│   └── icons/        # Social media icons
+├──Project 1 
+|   css/
+│   └── style.css
+|   js/
+│   └── script.js     # Main logic script
+├── index.html
+├──Project 2 
+|   css/
+│   └── style.css
+|   js/
+│   └── script.js     # Main logic script
+├── index.html
+├──Project 3 
+|   css/
+│   └── style.css
+|   js/
+│   └── script.js     # Main logic script
+├── index.html       # Social media icons
 ├── css/
 │   └── style.css     # Main stylesheet
 ├── js/
